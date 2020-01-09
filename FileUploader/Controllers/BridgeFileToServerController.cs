@@ -7,13 +7,13 @@ using TusDotNetClient;
 
 namespace FileUploader.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
     public class BridgeFileToServerController : ControllerBase
     {
-        // POST api/upload
-        [HttpPost("[action]")]
-        public async Task UploadAsync([FromBody] IFormFile file)
+        // POST upload
+        [Route("[action]")]
+        [HttpPost]
+        public async Task Upload(IFormFile file)
         {
             var filePath = SaveAndGetFilePath(file);
 
@@ -23,7 +23,7 @@ namespace FileUploader.Controllers
             var uploadOperation = client.UploadAsync(fileUrl, _file, 5D);
 
             uploadOperation.Progressed += (transferred, total) =>
-                Console.WriteLine($"Progress: {transferred}/{total}");
+                Console.WriteLine($"{((float)transferred / (float)total) * 100.00}%");
 
             await uploadOperation;
         }
